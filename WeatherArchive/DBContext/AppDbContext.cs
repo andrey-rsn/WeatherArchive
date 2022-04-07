@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WeatherArchive.Models;
 
 namespace WeatherArchive.DBContext
 {
@@ -8,5 +9,7 @@ namespace WeatherArchive.DBContext
         {
 
         }
+
+        public DbSet<WeatherConditions> weatherConditions;
     }
 }
