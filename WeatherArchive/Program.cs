@@ -1,7 +1,17 @@
-var builder = WebApplication.CreateBuilder(args);
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using WeatherArchive.DBContext;
+using WeatherArchive.Models;
+using WeatherArchive.Services.AutoMapper;
 
-// Add services to the container.
+
+var builder = WebApplication.CreateBuilder(args);
+ConfigurationManager configuration = builder.Configuration;
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("Dev")));
+
 
 var app = builder.Build();
 
