@@ -8,9 +8,10 @@ using WeatherArchive.Services.AutoMapper;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-// Add services to the container.
+builder.Services.AddSingleton(mapper);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("Dev")));
+
 
 var app = builder.Build();
 
