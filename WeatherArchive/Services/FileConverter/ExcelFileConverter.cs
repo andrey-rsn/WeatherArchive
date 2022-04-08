@@ -45,7 +45,7 @@ namespace WeatherArchive.Services.FileConverter
                     {
                         throw new Exception();
                     }
-                    for(int j = 0; j < rowCount; j++)
+                    for(int j = 3; j < rowCount; j++)
                     {
                         var Row=sheet.GetRow(j);
                         if (Row == null)

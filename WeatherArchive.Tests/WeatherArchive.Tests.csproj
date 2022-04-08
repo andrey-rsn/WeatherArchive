@@ -16,4 +16,8 @@
     <ProjectReference Include="..\WeatherArchive\WeatherArchive.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestFiles\" />
+  </ItemGroup>
+
 </Project>
