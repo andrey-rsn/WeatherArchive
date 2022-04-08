@@ -30,7 +30,6 @@ namespace WeatherArchive.Tests
         }
 
         [Test]
-        
         public void ConvertFile_CorrectFile_CorrectData()
         {
             List<WeatherConditionsDTO> resultList = new List<WeatherConditionsDTO>();
@@ -42,6 +41,32 @@ namespace WeatherArchive.Tests
             var result= JsonConvert.SerializeObject(resultList);
             var expected = JsonConvert.SerializeObject(expectedResult);
             Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [TestCase("Uncorrect1.xl")]
+        [TestCase("Uncorrect2.txt")]
+        [TestCase("Uncorrect3.xlsxx")]
+        public void ConvertFile_FileWithUncorrectExtension_Exception(string fileName)
+        {
+            using (FileStream file = new FileStream(GetTestPath(fileName), FileMode.Open, FileAccess.Read))
+            {
+                Assert.Throws<Exception>(() => _fileConverter.ConvertFile(file));
+            }
+            
+        }
+
+        [Test]
+        [TestCase("Invalid1.xlsx")]
+        [TestCase("Invalid2.xlsx")]
+        [TestCase("Invalid3.xlsx")]
+        public void ConvertFile_InvalidFile_Exception(string fileName)
+        {
+            using (FileStream file = new FileStream(GetTestPath(fileName), FileMode.Open, FileAccess.Read))
+            {
+                Assert.Throws<Exception>(() => _fileConverter.ConvertFile(file));
+            }
+
         }
 
         private static List<WeatherConditionsDTO> TestCase1 = new List<WeatherConditionsDTO>()

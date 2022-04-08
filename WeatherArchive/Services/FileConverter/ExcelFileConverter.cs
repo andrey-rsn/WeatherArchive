@@ -17,24 +17,25 @@ namespace WeatherArchive.Services.FileConverter
             try
             {
                 IWorkbook workbook = null;
-                if(inputFile.Name.IndexOf(".xlsx")>0)
+                
+                if (string.Equals(Path.GetExtension(inputFile.Name),".xlsx"))
                 {
                     workbook=new XSSFWorkbook(inputFile);
                 }
-                else if(inputFile.Name.IndexOf(".xls") > 0)
+                else if(string.Equals(Path.GetExtension(inputFile.Name), ".xls"))
                 {
                     workbook = new HSSFWorkbook(inputFile);
                 }
                 else
                 {
-                    throw new Exception();
+                    throw new ArgumentException("File is invalid");
                 }
 
                 List<WeatherConditionsDTO> weatherConditionsList = new List<WeatherConditionsDTO>();
                 var sheetsNumber = workbook.NumberOfSheets;
                 if(sheetsNumber==0)
                 {
-                    throw new Exception();
+                    throw new ArgumentException("There are no sheets in file");
                 }
                 for (int i = 0; i < sheetsNumber; i++)
                 {
@@ -42,62 +43,22 @@ namespace WeatherArchive.Services.FileConverter
 
                     if (sheet == null)
                     {
-                        throw new Exception();
+                        throw new ArgumentException("One of sheets is invalid");
                     }
 
                     var rowCount = sheet.LastRowNum;
                     if(rowCount == 0)
                     {
-                        throw new Exception();
+                        throw new ArgumentException("There are no rows in sheet");
                     }
                     for(int j = 4; j < rowCount+1; j++)
                     {
                         var Row=sheet.GetRow(j);
                         if (Row == null)
                         {
-                            throw new Exception();
+                            throw new ArgumentException("One of rows is invalid");
                         }
                         DataFormatter formatter = new DataFormatter();
-
-                        //Row.GetCell(10).CellType
-                        //int VVParse;
-                        //int? vv;
-                        //var result=Int32.TryParse(Row.GetCell(10).StringCellValue.Trim(),out VVParse);
-                        //if(!result)
-                        //{
-                        //    vv=null;
-                        //}
-                        //else
-                        //{
-                        //    vv = VVParse;
-                        //}
-                        //WeatherConditionsDTO weatherConditionsFromFile = new WeatherConditionsDTO()
-                        //{
-                        //    Date = Row.GetCell(0).DateCellValue.Date,
-                        //    Time = Row.GetCell(1).DateCellValue.TimeOfDay,
-                        //    AirTemerature = (double)Row.GetCell(2).NumericCellValue,
-                        //    RelativeHumidity = (int)Row.GetCell(3).NumericCellValue,
-                        //    Td = (double)Row.GetCell(4).NumericCellValue,
-                        //    AtmosphericPressure = (int)Row.GetCell(5).NumericCellValue,
-                        //    WindDirection = Row.GetCell(6).StringCellValue.Trim(),
-                        //    WindSpeed = (int)Row.GetCell(7).NumericCellValue,
-                        //    CloudCover = (int)Row.GetCell(8).NumericCellValue,
-                        //    H = (int)Row.GetCell(9).NumericCellValue,
-                        //    VV = vv,
-                        //    WeatherPhenomena = Row.GetCell(11).StringCellValue.Trim()
-                        //};
-                        //var Date = DateTime.Parse(formatter.FormatCellValue(Row.GetCell(0)).Trim());
-                        //var Time = TimeSpan.Parse(formatter.FormatCellValue(Row.GetCell(1)).Trim());
-                        //var AirTemerature = double.Parse(formatter.FormatCellValue(Row.GetCell(2)).Trim());
-                        //var RelativeHumidity = Int32.Parse(formatter.FormatCellValue(Row.GetCell(3)).Trim());
-                        //var Td = double.Parse(formatter.FormatCellValue(Row.GetCell(4)).Trim());
-                        //var AtmosphericPressure = Int32.Parse(formatter.FormatCellValue(Row.GetCell(5)).Trim());
-                        //var WindDirection = formatter.FormatCellValue(Row.GetCell(6)).Trim();
-                        //var WindSpeed = Int32.Parse(formatter.FormatCellValue(Row.GetCell(7)).Trim());
-                        //var CloudCover = Int32.Parse(formatter.FormatCellValue(Row.GetCell(8)).Trim());
-                        //var H = Int32.Parse(formatter.FormatCellValue(Row.GetCell(9)).Trim());
-                        //var VV = GetValueOrNull<int>(formatter.FormatCellValue(Row.GetCell(10)).Trim());
-                        //var WeatherPhenomena = formatter.FormatCellValue(Row.GetCell(11)).Trim();
                         WeatherConditionsDTO weatherConditionsFromFile = new WeatherConditionsDTO()
                         {
                             Date = DateTime.Parse(formatter.FormatCellValue(Row.GetCell(0)).Trim()),
@@ -129,7 +90,7 @@ namespace WeatherArchive.Services.FileConverter
 
                 
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
