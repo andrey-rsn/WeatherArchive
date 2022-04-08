@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "6afd555b-b694-4b24-a858-af6001fa1436": {
+      "ProjectGuid": "6afd555b-b694-4b24-a858-af6001fa1436",
+      "DisplayName": "WeatherArchive",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
