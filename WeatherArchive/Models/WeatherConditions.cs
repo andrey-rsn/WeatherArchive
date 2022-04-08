@@ -9,7 +9,7 @@ namespace WeatherArchive.Models
 
         public DateTime Date { get; set; }
 
-        public DateTime Time { get; set; }
+        public TimeSpan Time { get; set; }
 
         public double AirTemerature { get; set; }
 

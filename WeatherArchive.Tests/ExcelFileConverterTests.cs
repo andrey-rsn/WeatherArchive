@@ -42,7 +42,7 @@ namespace WeatherArchive.Tests
         }
 
 
-        private static List<WeatherConditionsDTO> TestCase1 = new List<WeatherConditionsDTO>()
+        /*private static List<WeatherConditionsDTO> TestCase1 = new List<WeatherConditionsDTO>()
         {
             new WeatherConditionsDTO()
             {
@@ -94,7 +94,7 @@ namespace WeatherArchive.Tests
             }
 
 
-        };
+        };*/
 
     }
 }

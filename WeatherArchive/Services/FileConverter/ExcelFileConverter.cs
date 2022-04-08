@@ -1,6 +1,7 @@
 ﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System.Globalization;
 using WeatherArchive.Models.DTOs;
 
 namespace WeatherArchive.Services.FileConverter
@@ -45,18 +46,18 @@ namespace WeatherArchive.Services.FileConverter
                     {
                         throw new Exception();
                     }
-                    for(int j = 3; j < rowCount; j++)
+                    for(int j = 4; j < rowCount; j++)
                     {
                         var Row=sheet.GetRow(j);
                         if (Row == null)
                         {
                             throw new Exception();
                         }
-
+                        
                         WeatherConditionsDTO weatherConditionsFromFile = new WeatherConditionsDTO()
                         {
-                            Date = DateTime.Parse(Row.GetCell(0).StringCellValue.Trim()),
-                            Time = DateTime.Parse(Row.GetCell(1).StringCellValue.Trim()),
+                            Date = Row.GetCell(0).DateCellValue.Date,
+                            Time = Row.GetCell(1).DateCellValue.TimeOfDay,
                             AirTemerature = Double.Parse(Row.GetCell(2).StringCellValue.Trim()),
                             RelativeHumidity = Int32.Parse(Row.GetCell(3).StringCellValue.Trim()),
                             Td = Double.Parse(Row.GetCell(4).StringCellValue.Trim()),

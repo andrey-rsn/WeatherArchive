@@ -27,7 +27,7 @@ namespace WeatherArchive.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<WeatherConditionsDTO>> GetWeatherConditionsByYearAndTime(int Year, DateTime Time)
+        public async Task<IEnumerable<WeatherConditionsDTO>> GetWeatherConditionsByYearAndTime(int Year, TimeSpan Time)
         {
             var WeatherConditions = await _dbContext.weatherConditions.Where(x => x.Date.Year == Year && x.Time == Time).ToListAsync();
             var result = _mapper.Map<IEnumerable<WeatherConditionsDTO>>(WeatherConditions);

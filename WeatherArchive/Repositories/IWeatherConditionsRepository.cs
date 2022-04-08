@@ -4,7 +4,7 @@ namespace WeatherArchive.Repositories
 {
     public interface IWeatherConditionsRepository
     {
-        Task<IEnumerable<WeatherConditionsDTO>> GetWeatherConditionsByYearAndTime(int Year, DateTime Time);
+        Task<IEnumerable<WeatherConditionsDTO>> GetWeatherConditionsByYearAndTime(int Year, TimeSpan Time);
 
         Task<bool> AddRangeWeatherConditions(IEnumerable<WeatherConditionsDTO> weatherConditionsDTO);
 
