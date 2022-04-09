@@ -1,8 +1,15 @@
-﻿
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+﻿<head>
+    <script type="text/javascript">
+        @if (ViewBag.Message != null)
+        {
+            <text>
+            $(document).ready(function() {
+                alert('@ViewBag.Message ');
+            });
+            </text>
+        }
+    </script>
+</head>
 
 @if(ViewBag.Message != null)
 {

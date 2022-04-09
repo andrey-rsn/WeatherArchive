@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Text;
 using WeatherArchive.Models;
 using WeatherArchive.Models.DTOs;
 using WeatherArchive.Repositories;
@@ -45,34 +46,50 @@ namespace WeatherArchive.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFiles(IFormFileCollection files)
         {
-            try
+            StringBuilder ResultMessage=new StringBuilder("");
+            if(files.Count==0)
             {
-                
-                foreach(var file in files)
+                ResultMessage.Append("There are no files uploaded");
+            }
+            foreach(var file in files)
+            {
+                try
                 {
-                    
-                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath+"/Files/"+file.FileName, FileMode.Create))
+                    string filePath = _appEnvironment.WebRootPath + "/Files/" + file.FileName;
+                    if(System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                    using (var fileStream = new FileStream(filePath, FileMode.CreateNew))
                     {
                         await file.CopyToAsync(fileStream);
-                        var weatherConditions =_fileConverter.ConvertFile(fileStream);
-                        var result =await _weatherConditionsRepository.AddRangeWeatherConditions(weatherConditions);
-                        if(!result)
+
+                    }
+                    using (var fileStream = new FileStream(filePath, FileMode.Open))
+                    {
+                        var weatherConditions = _fileConverter.ConvertFile(fileStream);
+                        if (weatherConditions == null)
                         {
-                            throw new ArgumentException("Ошибка при чтении файла");
+                            throw new Exception("File is uncorrect");
+                        }
+                        var result = await _weatherConditionsRepository.AddRangeWeatherConditions(weatherConditions);
+                        if (!result)
+                        {
+                            throw new Exception("Uploading error");
                         }
                     }
+                    System.IO.File.Delete(filePath);
+                    ResultMessage.Append("\n" + "File " + file.FileName + ": successfuly uploaded");
                 }
-                
-                ViewBag.Message = "Файлы успешно загружены.";
-                return View();
+                catch (Exception ex)
+                {
+                    ResultMessage.Append("\n"+"File "+file.FileName+":"+ex.Message);
+                }
 
             }
-            catch(Exception ex)
-            {
-                ViewBag.Message = string.Concat("Ошибка при загрузке файлов:", ex.Message);
-                return View();
-            }
-
+            
+            ViewBag.Message = ResultMessage.ToString();
+            return View(nameof(UploadArchive));
         }
 
 
