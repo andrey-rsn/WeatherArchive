@@ -1,6 +1,5 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
-
-<p>Use this page to detail your site's privacy policy.</p>
+﻿<form asp-controller="Home" asp-action="UploadFiles" method="post" enctype="multipart/form-data">
+   <label>Выберите файлы:</label> 
+   <input id="files" multiple="multiple" name="files" type="file" /> 
+   <input id="btnUpload" type="submit" value="Отправить" />
+</form>

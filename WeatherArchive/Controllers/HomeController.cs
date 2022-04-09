@@ -7,18 +7,21 @@ using WeatherArchive.Services.FileConverter;
 
 namespace WeatherArchive.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IFileConverter<WeatherConditionsDTO> _fileConverter;
+        private readonly IFileConverter<IEnumerable<WeatherConditionsDTO>> _fileConverter;
         private readonly IWebHostEnvironment _appEnvironment;
         private readonly IWeatherConditionsRepository _weatherConditionsRepository;
 
-        public HomeController(ILogger<HomeController> logger, IFileConverter<WeatherConditionsDTO> fileConverter, IWeatherConditionsRepository weatherConditionsRepository = null)
+        
+        public HomeController(ILogger<HomeController> logger, IFileConverter<IEnumerable<WeatherConditionsDTO>> fileConverter , IWeatherConditionsRepository weatherConditionsRepository , IWebHostEnvironment appEnvironment )
         {
             _logger = logger;
             _fileConverter = fileConverter;
             _weatherConditionsRepository = weatherConditionsRepository;
+            _appEnvironment = appEnvironment;
         }
 
         [HttpGet]
@@ -44,31 +47,31 @@ namespace WeatherArchive.Controllers
         {
             try
             {
-                List<WeatherConditionsDTO> weatherConditionsList = new List<WeatherConditionsDTO>();
+                
                 foreach(var file in files)
                 {
-
+                    
                     using (var fileStream = new FileStream(_appEnvironment.WebRootPath+"/Files/"+file.FileName, FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
                         var weatherConditions =_fileConverter.ConvertFile(fileStream);
-                        weatherConditionsList.Add(weatherConditions);
+                        var result =await _weatherConditionsRepository.AddRangeWeatherConditions(weatherConditions);
+                        if(!result)
+                        {
+                            throw new ArgumentException("Ошибка при чтении файла");
+                        }
                     }
                 }
-                if(weatherConditionsList.Count == 0)
-                {
-                    throw new ArgumentException("Invalid files.");
-
-                }
-                ViewBag.Message = "Файлы успешно загружены.";
                 
+                ViewBag.Message = "Файлы успешно загружены.";
+                return View();
+
             }
             catch(Exception ex)
             {
                 ViewBag.Message = string.Concat("Ошибка при загрузке файлов:", ex.Message);
+                return View();
             }
-
-            return View("UploadMessage");
 
         }
 
