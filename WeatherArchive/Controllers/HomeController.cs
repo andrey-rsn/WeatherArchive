@@ -43,7 +43,7 @@ namespace WeatherArchive.Controllers
             var date = new DateTime(Year, Month, 01);
             var weatherConditionsList= await _weatherConditionsRepository.GetWeatherConditionsByYearAndTime(date.Year, date.Month);
 
-            PageViewModel pageModel = new PageViewModel(weatherConditionsList.Count(),page,10);
+            PageViewModel pageModel = new PageViewModel(weatherConditionsList.Count(),page,5);
 
             var ViewModel = new WeatherConditionsListViewModel()
             {

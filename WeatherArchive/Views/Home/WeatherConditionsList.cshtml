@@ -4,37 +4,47 @@
     ViewData["Title"] = "Home Page";
 }
 <form asp-controller="Home" asp-action="WeatherConditionsList" method="get"> 
+
+<input type="hidden" name="year" id="yearInput" >
+<input type="hidden" name="month" id="monthInput" >
+
+<div align="center" class="d-inline">
+    <input id="Sort" type="submit" value="Отсортировать"/>
+</div>
+
+</form>
+
 <div align="center" class="d-inline">
     <label>Сортировка:</label>
     </div>
 
     <div align="center" class="d-inline">
-    <label>Год  <select id="year"></select></label>
+    <label>Год  <select id="yearSelect">
+    </select></label>
     </div>
 
     <div align="center" class="d-inline">
-    <label>Месяц  <select id="month">
+    <label>Месяц  <select id="monthSelect">
         
-        <option value=”1”>Январь</option>
-        <option value=”2”>Февраль</option>
-        <option value=”3”>Март</option>
-        <option value=”4”>Апрель</option>
-        <option value=”5”>Май</option>
-        <option value=”6”>Июнь</option>
-        <option value=”7”>Июль</option>
-        <option value=”8”>Август</option>
-        <option value=”9”>Сентябрь</option>
-        <option value=”10”>Октябрь</option>
-        <option value=”11”>Ноябрь</option>
-        <option value=”12”>Декабрь</option>
+        <option value=1>Январь</option>
+        <option value=2>Февраль</option>
+        <option value=3>Март</option>
+        <option value=4>Апрель</option>
+        <option value=5>Май</option>
+        <option value=6>Июнь</option>
+        <option value=7>Июль</option>
+        <option value=8>Август</option>
+        <option value=9>Сентябрь</option>
+        <option value=10>Октябрь</option>
+        <option value=11>Ноябрь</option>
+        <option value=12>Декабрь</option>
     </select>
     </label>
     </div>
 
-<div align="center" class="d-inline">
-    <input id="Sort" type="submit" value="Отсортировать"/>
-</div>
-</form>
+
+
+
 @if(Model.WeatherConditions.Count()>0)
 {
         <style>
@@ -113,7 +123,7 @@
     </table>
     @if (Model.PageViewModel.HasPreviousPage)
     {
-        <a asp-action="Index"
+        <a asp-action="WeatherConditionsList"
            asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
            class="btn btn-outline-dark">
             <i class="glyphicon glyphicon-chevron-left"></i>
@@ -122,7 +132,7 @@
     }
     @if (Model.PageViewModel.HasNextPage)
     {
-        <a asp-action="Index"
+        <a asp-action="WeatherConditionsList"
            asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
            class="btn btn-outline-dark">
             Вперед
@@ -140,9 +150,36 @@ else
 @section Scripts
 {
     <script>
-    for (let year = 1920; year <= (new Date()).getFullYear(); year++) {
-      let options = document.createElement("OPTION");
-      document.getElementById("year").appendChild(options).innerHTML = year;
+     {
+        window.onload=function(){
+                for (let year = (new Date()).getFullYear(); year >=1920 ; year--) {
+                  let options = document.createElement("OPTION");
+                  document.getElementById("yearSelect").appendChild(options).innerHTML = year;
+                }
+            }
+    }
+    </script>
+
+    <script>
+    {
+        
+        const year = document.getElementById("yearSelect").value;
+        const month = document.getElementById("monthSelect").value;
+        document.getElementById("yearInput").value = year;
+        document.getElementById("monthInput").value = month;
+
+        const elementYear = document.querySelector('#yearSelect');
+        const elementMonth = document.querySelector('#monthSelect');
+
+        elementYear.addEventListener("change", function() {
+          const element = document.querySelector('#yearSelect');
+          document.getElementById("yearInput").value = element.value;
+        });
+
+        elementMonth.addEventListener("change", function() {
+          const element = document.querySelector('#monthSelect');
+          document.getElementById("monthInput").value = element.value;
+        });
     }
     </script>
 }
