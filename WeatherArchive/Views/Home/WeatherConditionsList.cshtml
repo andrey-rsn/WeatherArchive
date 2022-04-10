@@ -1,8 +1,84 @@
-﻿@{
+﻿@using WeatherArchive.Models
+@model WeatherConditionsListViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <style>
+        @@font-face {
+            font-family: 'FontAwesome';
+            src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), 
+            url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), 
+            url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal
+        }
+ 
+        .glyphicon {
+            display: inline-block;
+            font: normal normal normal 14px/1 FontAwesome;
+            font-size: inherit;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale
+        }
+ 
+        .glyphicon-chevron-right:before {
+            content: "\f054";
+        }
+ 
+        .glyphicon-chevron-left:before {
+            content: "\f053";
+        }
+    </style>
+<h1>Список пользователей</h1>
+<table class="table">
+    <tr>
+        <th>Дата</th>
+        <th>Время</th>
+        <th>T</th>
+        <th>Влажность воздуха(%)</th>
+        <th>Td</th>
+        <th>Атм. давление, мм. рт. ст</th>
+        <th>Направление ветра</th>
+        <th>Скорость ветра (м/с)</th>
+        <th>Облачность(%)</th>
+        <th>h</th>
+        <th>VV</th>
+        <th>Погодные явления</th>
+    </tr>
+    @foreach (var u in Model.WeatherConditions)
+    {
+        <tr>
+            <td>@u.Date</td>
+            <td>@u.Time</td>
+            <td>@u.AirTemerature</td>
+            <td>@u.RelativeHumidity</td>
+            <td>@u.Td</td>
+            <td>@u.AtmosphericPressure</td>
+            <td>@u.WindDirection</td>
+            <td>@u.WindSpeed</td>
+            <td>@u.CloudCover</td>
+            <td>@u.H</td>
+            <td>@u.VV</td>
+            <td>@u.WeatherPhenomena</td>
+        </tr>
+    }
+</table>
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}

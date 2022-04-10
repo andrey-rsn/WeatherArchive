@@ -31,10 +31,27 @@ namespace WeatherArchive.Controllers
             return View();
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> WeatherConditionsList()
+        //{
+        //    return View();
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> WeatherConditionsList()
+        public async Task<IActionResult> WeatherConditionsList(int Year=1999,int Month=1,int page=1)
         {
-            return View();
+            var date = new DateTime(Year, Month, 01);
+            var weatherConditionsList= await _weatherConditionsRepository.GetWeatherConditionsByYearAndTime(date.Year, date.Month);
+
+            PageViewModel pageModel = new PageViewModel(weatherConditionsList.Count(),page,10);
+
+            var ViewModel = new WeatherConditionsListViewModel()
+            {
+                WeatherConditions = weatherConditionsList,
+                PageViewModel = pageModel
+            };
+
+            return View(ViewModel);
         }
 
         [HttpGet]
@@ -79,11 +96,11 @@ namespace WeatherArchive.Controllers
                         }
                     }
                     System.IO.File.Delete(filePath);
-                    ResultMessage.Append("\n" + "File " + file.FileName + ": successfuly uploaded");
+                    ResultMessage.Append("\n " + "File " + file.FileName + ": successfuly uploaded");
                 }
                 catch (Exception ex)
                 {
-                    ResultMessage.Append("\n"+"File "+file.FileName+":"+ex.Message);
+                    ResultMessage.Append("\n "+"File "+file.FileName+":"+ex.Message);
                 }
 
             }
