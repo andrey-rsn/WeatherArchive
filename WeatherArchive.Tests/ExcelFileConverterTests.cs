@@ -119,7 +119,7 @@ namespace WeatherArchive.Tests
                         WindSpeed = 0,
                         CloudCover = 90,
                         H = 800,
-                        VV = 4,
+                        VV = "4",
                         WeatherPhenomena = "Дымка"
                     }
 

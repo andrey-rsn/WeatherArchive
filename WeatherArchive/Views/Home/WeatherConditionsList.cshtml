@@ -3,82 +3,146 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-    <style>
-        @@font-face {
-            font-family: 'FontAwesome';
-            src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), 
-            url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), 
-            url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal
-        }
- 
-        .glyphicon {
-            display: inline-block;
-            font: normal normal normal 14px/1 FontAwesome;
-            font-size: inherit;
-            text-rendering: auto;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale
-        }
- 
-        .glyphicon-chevron-right:before {
-            content: "\f054";
-        }
- 
-        .glyphicon-chevron-left:before {
-            content: "\f053";
-        }
-    </style>
-<h1>Список пользователей</h1>
-<table class="table">
-    <tr>
-        <th>Дата</th>
-        <th>Время</th>
-        <th>T</th>
-        <th>Влажность воздуха(%)</th>
-        <th>Td</th>
-        <th>Атм. давление, мм. рт. ст</th>
-        <th>Направление ветра</th>
-        <th>Скорость ветра (м/с)</th>
-        <th>Облачность(%)</th>
-        <th>h</th>
-        <th>VV</th>
-        <th>Погодные явления</th>
-    </tr>
-    @foreach (var u in Model.WeatherConditions)
-    {
+<form asp-controller="Home" asp-action="WeatherConditionsList" method="get"> 
+<div align="center" class="d-inline">
+    <label>Сортировка:</label>
+    </div>
+
+    <div align="center" class="d-inline">
+    <label>Год  <select id="year"></select></label>
+    </div>
+
+    <div align="center" class="d-inline">
+    <label>Месяц  <select id="month">
+        
+        <option value=”1”>Январь</option>
+        <option value=”2”>Февраль</option>
+        <option value=”3”>Март</option>
+        <option value=”4”>Апрель</option>
+        <option value=”5”>Май</option>
+        <option value=”6”>Июнь</option>
+        <option value=”7”>Июль</option>
+        <option value=”8”>Август</option>
+        <option value=”9”>Сентябрь</option>
+        <option value=”10”>Октябрь</option>
+        <option value=”11”>Ноябрь</option>
+        <option value=”12”>Декабрь</option>
+    </select>
+    </label>
+    </div>
+
+<div align="center" class="d-inline">
+    <input id="Sort" type="submit" value="Отсортировать"/>
+</div>
+</form>
+@if(Model.WeatherConditions.Count()>0)
+{
+        <style>
+            @@font-face {
+                font-family: 'FontAwesome';
+                src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), 
+                url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), 
+                url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
+                font-weight: normal;
+                font-style: normal
+            }
+     
+            .glyphicon {
+                display: inline-block;
+                font: normal normal normal 14px/1 FontAwesome;
+                font-size: inherit;
+                text-rendering: auto;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale
+            }
+     
+            .glyphicon-chevron-right:before {
+                content: "\f054";
+            }
+     
+            .glyphicon-chevron-left:before {
+                content: "\f053";
+            }
+        </style>
+    <h1 align="center">Список погодных условий</h1>
+    <table class="table table-bordered" border="1" bordercolor="grey"  align="center">
+        <tbody>
         <tr>
-            <td>@u.Date</td>
-            <td>@u.Time</td>
-            <td>@u.AirTemerature</td>
-            <td>@u.RelativeHumidity</td>
-            <td>@u.Td</td>
-            <td>@u.AtmosphericPressure</td>
-            <td>@u.WindDirection</td>
-            <td>@u.WindSpeed</td>
-            <td>@u.CloudCover</td>
-            <td>@u.H</td>
-            <td>@u.VV</td>
-            <td>@u.WeatherPhenomena</td>
+            <th>Дата</th>
+
+            <th>Время</th>
+
+            <th>T</th>
+
+            <th>Влажность воздуха(%)</th>
+
+            <th>Td</th>
+
+            <th>Атм. давление, мм. рт. ст</th>
+
+            <th>Направление ветра</th>
+
+            <th>Скорость ветра (м/с)</th>
+
+            <th>Облачность(%)</th>
+
+            <th>h</th>
+
+            <th>VV</th>
+
+            <th>Погодные явления</th>
         </tr>
+        @foreach (var u in Model.WeatherConditions)
+        {
+            <tr>
+                <td>@u.Date.ToShortDateString()</td>
+                <td>@u.Time</td>
+                <td>@u.AirTemerature</td>
+                <td>@u.RelativeHumidity</td>
+                <td>@u.Td</td>
+                <td>@u.AtmosphericPressure</td>
+                <td>@u.WindDirection</td>
+                <td>@u.WindSpeed</td>
+                <td>@u.CloudCover</td>
+                <td>@u.H</td>
+                <td>@u.VV</td>
+                <td>@u.WeatherPhenomena</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           class="btn btn-outline-dark">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Назад
+        </a>
     }
-</table>
-@if (Model.PageViewModel.HasPreviousPage)
-{
-    <a asp-action="Index"
-       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
-       class="btn btn-outline-dark">
-        <i class="glyphicon glyphicon-chevron-left"></i>
-        Назад
-    </a>
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           class="btn btn-outline-dark">
+            Вперед
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </a>
+    }
+
 }
-@if (Model.PageViewModel.HasNextPage)
+else
 {
-    <a asp-action="Index"
-       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
-       class="btn btn-outline-dark">
-        Вперед
-        <i class="glyphicon glyphicon-chevron-right"></i>
-    </a>
+    <h1>Список пуст</h1>
+}
+
+
+@section Scripts
+{
+    <script>
+    for (let year = 1920; year <= (new Date()).getFullYear(); year++) {
+      let options = document.createElement("OPTION");
+      document.getElementById("year").appendChild(options).innerHTML = year;
+    }
+    </script>
 }

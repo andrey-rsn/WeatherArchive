@@ -38,7 +38,7 @@ namespace WeatherArchive.Controllers
         //}
 
         [HttpGet]
-        public async Task<IActionResult> WeatherConditionsList(int Year=1999,int Month=1,int page=1)
+        public async Task<IActionResult> WeatherConditionsList(int Year=2010,int Month=1,int page=1)
         {
             var date = new DateTime(Year, Month, 01);
             var weatherConditionsList= await _weatherConditionsRepository.GetWeatherConditionsByYearAndTime(date.Year, date.Month);
