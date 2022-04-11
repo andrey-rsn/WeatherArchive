@@ -65,7 +65,7 @@ namespace WeatherArchive.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFiles(IFormFileCollection files)
         {
-            StringBuilder ResultMessage=new StringBuilder("");
+            StringBuilder ResultMessage=new StringBuilder("Result: ");
             if(files.Count==0)
             {
                 ResultMessage.Append("There are no files uploaded");
@@ -98,11 +98,11 @@ namespace WeatherArchive.Controllers
                         }
                     }
                     System.IO.File.Delete(filePath);
-                    ResultMessage.Append("\n " + "File " + file.FileName + ": successfuly uploaded");
+                    ResultMessage.Append("\\r\\n" + "File: " + file.FileName + " -- successfuly uploaded");
                 }
                 catch (Exception ex)
                 {
-                    ResultMessage.Append("\n "+"File "+file.FileName+":"+ex.Message);
+                    ResultMessage.Append("\\r\\n" +"File: "+file.FileName + " -- "+ex.Message);
                 }
 
             }
