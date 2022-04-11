@@ -1,0 +1,250 @@
+﻿@using WeatherArchive.Models
+@model WeatherConditionsListViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form asp-controller="Home" asp-action="WeatherConditionsList" method="get" align="left"> 
+
+<input type="hidden" name="year" id="yearInput_main" >
+<input type="hidden" name="month" id="monthInput_main" >
+<input type="hidden" name="pageSize" id="pageSizeInput_main" >
+
+
+
+
+<div align="center" class="d-inline">
+    <label>Сортировка:</label>
+    </div>
+
+    <div align="center" class="d-inline">
+    <label>Год  <select id="yearSelect">
+    </select></label>
+    </div>
+
+    <div align="center" class="d-inline">
+    <label>Месяц  <select id="monthSelect">
+        
+        <option value=1>Январь</option>
+        <option value=2>Февраль</option>
+        <option value=3>Март</option>
+        <option value=4>Апрель</option>
+        <option value=5>Май</option>
+        <option value=6>Июнь</option>
+        <option value=7>Июль</option>
+        <option value=8>Август</option>
+        <option value=9>Сентябрь</option>
+        <option value=10>Октябрь</option>
+        <option value=11>Ноябрь</option>
+        <option value=12>Декабрь</option>
+    </select>
+    </label>
+
+    <label>Кол-во элементов на странице <select id="pageSizeSelect">
+        
+        <option value=5>5</option>
+        <option value=10>10</option>
+        <option value=20>20</option>
+      
+    </select>
+    </label>
+
+    </div>
+
+    <div align="center" class="d-inline" >
+    <input id="Sort" type="submit" value="Отсортировать"/>
+    </div>
+</form>
+
+
+@if(Model.WeatherConditions.Count()>0)
+{
+        <style>
+            @@font-face {
+                font-family: 'FontAwesome';
+                src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2'), 
+                url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff') format('woff'), 
+                url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/fonts/fontawesome-webfont.ttf') format('truetype');
+                font-weight: normal;
+                font-style: normal
+            }
+     
+            .glyphicon {
+                display: inline-block;
+                font: normal normal normal 14px/1 FontAwesome;
+                font-size: inherit;
+                text-rendering: auto;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale
+            }
+     
+            .glyphicon-chevron-right:before {
+                content: "\f054";
+            }
+     
+            .glyphicon-chevron-left:before {
+                content: "\f053";
+            }
+        </style>
+    <h1 align="center">Список погодных условий</h1>
+    <table class="table table-bordered" border="1" bordercolor="grey"  align="center">
+        <tbody>
+        <tr>
+            <th>Дата</th>
+
+            <th>Время</th>
+
+            <th>T</th>
+
+            <th>Влажность воздуха(%)</th>
+
+            <th>Td</th>
+
+            <th>Атм. давление, мм. рт. ст</th>
+
+            <th>Направление ветра</th>
+
+            <th>Скорость ветра (м/с)</th>
+
+            <th>Облачность(%)</th>
+
+            <th>h</th>
+
+            <th>VV</th>
+
+            <th>Погодные явления</th>
+        </tr>
+        @foreach (var u in Model.WeatherConditions)
+        {
+            <tr>
+                <td>@u.Date.ToShortDateString()</td>
+                <td>@u.Time</td>
+                <td>@u.AirTemerature</td>
+                <td>@u.RelativeHumidity</td>
+                <td>@u.Td</td>
+                <td>@u.AtmosphericPressure</td>
+                <td>@u.WindDirection</td>
+                <td>@u.WindSpeed</td>
+                <td>@u.CloudCover</td>
+                <td>@u.H</td>
+                <td>@u.VV</td>
+                <td>@u.WeatherPhenomena</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div align="center" class="d-inline" justify-content= "space-between">
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+
+        <a asp-action="WeatherConditionsList"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)" asp-route-month=@Model.PageViewModel.Month asp-route-year=@Model.PageViewModel.Year asp-route-pageSize=@Model.PageViewModel.PageSize
+           class="btn btn-outline-dark">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Назад
+
+            <input type="hidden" name="year" id="yearInput" >
+            <input type="hidden" name="month" id="monthInput" >
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+
+        <a asp-action="WeatherConditionsList"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)" asp-route-month=@Model.PageViewModel.Month asp-route-year=@Model.PageViewModel.Year asp-route-pageSize=@Model.PageViewModel.PageSize
+           class="btn btn-outline-dark ">
+            Вперед
+            <i class="glyphicon glyphicon-chevron-right"></i>
+            <input type="hidden" name="year" id="yearInput" >
+            <input type="hidden" name="month" id="monthInput" >
+        </a>
+    }
+    <span align="right">
+    <p class="d-inline mr-2">Страница: @Model.PageViewModel.PageNumber из @Model.PageViewModel.TotalPages</p>
+    </span>
+    </div>
+
+}
+else
+{
+    <h1 align="center">Список пуст</h1>
+}
+
+
+@section Scripts
+{
+    <script>
+     {
+         
+         document.addEventListener("DOMContentLoaded", function(){
+                for (let year = (new Date()).getFullYear(); year >=1990 ; year--) {
+                  let options = document.createElement("OPTION");
+                  document.getElementById("yearSelect").appendChild(options).innerHTML = year;
+                }
+                
+                const searchString = new URLSearchParams(window.location.search);
+
+                const yearValue = searchString.get('year');
+                const month = searchString.get('month');
+                const pageSize = searchString.get('pageSize');
+
+                if(yearValue.trim()==="")
+                {
+                   document.getElementById("yearSelect").value=2010;
+                   document.getElementById("yearInput_main").value = 2010;
+                }
+                else
+                {
+                    document.getElementById("yearSelect").value=yearValue;
+                    document.getElementById("yearInput_main").value = yearValue;
+                }
+                if(month.trim()==="")
+                {
+                    document.getElementById("monthSelect").value=5;
+                    document.getElementById("monthInput_main").value = 5;
+                }
+                else
+                {
+                    document.getElementById("monthSelect").value=month;
+                    document.getElementById("monthInput_main").value = month;
+                }
+                if(pageSize.trim()==="")
+                {
+                    document.getElementById("pageSizeSelect").value=10;
+                    document.getElementById("pageSizeInput_main").value = 10;
+                }
+                else
+                {
+                    document.getElementById("pageSizeSelect").value=pageSize;
+                    document.getElementById("pageSizeInput_main").value = pageSize;
+                }
+                
+                
+            });
+    }
+    </script>
+
+    <script>
+    {
+        
+        const elementYear = document.querySelector('#yearSelect');
+        const elementMonth = document.querySelector('#monthSelect');
+        const elementPageSize = document.querySelector('#pageSizeSelect');
+
+        elementYear.addEventListener("change", function() {
+          const element = document.querySelector('#yearSelect');
+          document.getElementById("yearInput_main").value = element.value;
+        });
+
+        elementMonth.addEventListener("change", function() {
+          const element = document.querySelector('#monthSelect');
+          document.getElementById("monthInput_main").value = element.value;
+        });
+
+        elementPageSize.addEventListener("change", function() {
+          const element = document.querySelector('#pageSizeSelect');
+          document.getElementById("pageSizeInput_main").value = element.value;
+        });
+    }
+    </script>
+}

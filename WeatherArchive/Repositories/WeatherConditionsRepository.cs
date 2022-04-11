@@ -21,15 +21,20 @@ namespace WeatherArchive.Repositories
             {
                 return false;
             }
-            var weatherConditions = _mapper.Map<IEnumerable<WeatherConditions>>(weatherConditionsDTO);
+            var weatherConditions = _mapper.Map<List<WeatherConditions>>(weatherConditionsDTO);
             await _dbContext.weatherConditions.AddRangeAsync(weatherConditions);
             await _dbContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<IEnumerable<WeatherConditionsDTO>> GetWeatherConditionsByYearAndTime(int Year, TimeSpan Time)
+        public async Task<IEnumerable<WeatherConditionsDTO>> GetWeatherConditionsByYearAndTime(int Year, int Month)
         {
-            var WeatherConditions = await _dbContext.weatherConditions.Where(x => x.Date.Year == Year && x.Time == Time).ToListAsync();
+
+            var WeatherConditions = await _dbContext.weatherConditions.Where(x => x.Date.Year == Year && x.Date.Month == Month).ToListAsync();
+            if(WeatherConditions == null)
+            {
+                return new List<WeatherConditionsDTO>();
+            }
             var result = _mapper.Map<IEnumerable<WeatherConditionsDTO>>(WeatherConditions);
             return result;
         }

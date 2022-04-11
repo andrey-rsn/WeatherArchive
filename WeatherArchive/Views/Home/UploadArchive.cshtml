@@ -1,0 +1,23 @@
+﻿<form asp-controller="Home" asp-action="UploadFiles" method="post" enctype="multipart/form-data">
+   <label>Выберите файлы:</label> 
+   <input id="files" multiple="multiple" name="files" type="file" /> 
+   <input id="btnUpload" type="submit" value="Отправить" />
+</form>
+
+@section Scripts
+{
+@if(ViewBag.Message != null)
+{
+<script>
+
+    $(document).ready(function(){
+        
+    
+    alert('@ViewBag.Message');
+
+});
+
+</script>
+
+}
+}

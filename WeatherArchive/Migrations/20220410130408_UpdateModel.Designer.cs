@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WeatherArchive.DBContext;
 
@@ -11,9 +12,10 @@ using WeatherArchive.DBContext;
 namespace WeatherArchive.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220410130408_UpdateModel")]
+    partial class UpdateModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,8 +47,8 @@ namespace WeatherArchive.Migrations
                     b.Property<int?>("H")
                         .HasColumnType("int");
 
-                    b.Property<double?>("RelativeHumidity")
-                        .HasColumnType("float");
+                    b.Property<int?>("RelativeHumidity")
+                        .HasColumnType("int");
 
                     b.Property<double?>("Td")
                         .HasColumnType("float");
@@ -54,8 +56,8 @@ namespace WeatherArchive.Migrations
                     b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
 
-                    b.Property<string>("VV")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double?>("VV")
+                        .HasColumnType("float");
 
                     b.Property<string>("WeatherPhenomena")
                         .HasColumnType("nvarchar(max)");

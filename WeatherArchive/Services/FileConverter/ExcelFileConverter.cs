@@ -14,6 +14,7 @@ namespace WeatherArchive.Services.FileConverter
         }
         public IEnumerable<WeatherConditionsDTO> ConvertFile(FileStream inputFile)
         {
+
             try
             {
                 IWorkbook workbook = null;
@@ -59,22 +60,23 @@ namespace WeatherArchive.Services.FileConverter
                             throw new ArgumentException("One of rows is invalid");
                         }
                         DataFormatter formatter = new DataFormatter();
+
                         WeatherConditionsDTO weatherConditionsFromFile = new WeatherConditionsDTO()
                         {
                             Date = DateTime.Parse(formatter.FormatCellValue(Row.GetCell(0)).Trim()),
                             Time = TimeSpan.Parse(formatter.FormatCellValue(Row.GetCell(1)).Trim()),
-                            AirTemerature = double.Parse(formatter.FormatCellValue(Row.GetCell(2)).Trim()),
-                            RelativeHumidity = Int32.Parse(formatter.FormatCellValue(Row.GetCell(3)).Trim()),
-                            Td = double.Parse(formatter.FormatCellValue(Row.GetCell(4)).Trim()),
-                            AtmosphericPressure = Int32.Parse(formatter.FormatCellValue(Row.GetCell(5)).Trim()),
-                            WindDirection = formatter.FormatCellValue(Row.GetCell(6)).Trim(),
-                            WindSpeed = Int32.Parse(formatter.FormatCellValue(Row.GetCell(7)).Trim()),
-                            CloudCover = Int32.Parse(formatter.FormatCellValue(Row.GetCell(8)).Trim()),
-                            H = Int32.Parse(formatter.FormatCellValue(Row.GetCell(9)).Trim()),
-                            VV = GetValueOrNull<int>(formatter.FormatCellValue(Row.GetCell(10)).Trim()),
-                            WeatherPhenomena = formatter.FormatCellValue(Row.GetCell(11)).Trim()
+                            AirTemerature = GetValueOrNull<double>(formatter.FormatCellValue(Row.GetCell(2)).Trim()),
+                            RelativeHumidity = GetValueOrNull<double>(formatter.FormatCellValue(Row.GetCell(3)).Trim()),
+                            Td = GetValueOrNull<double>(formatter.FormatCellValue(Row.GetCell(4)).Trim()),
+                            AtmosphericPressure = GetValueOrNull<int>(formatter.FormatCellValue(Row.GetCell(5)).Trim()),
+                            WindDirection = CheckString(formatter.FormatCellValue(Row.GetCell(6))),
+                            WindSpeed = GetValueOrNull<int>(formatter.FormatCellValue(Row.GetCell(7)).Trim()),
+                            CloudCover = GetValueOrNull<int>(formatter.FormatCellValue(Row.GetCell(8)).Trim()),
+                            H = GetValueOrNull<int>(formatter.FormatCellValue(Row.GetCell(9)).Trim()),
+                            VV = CheckString(formatter.FormatCellValue(Row.GetCell(10))),
+                            WeatherPhenomena =  CheckString(formatter.FormatCellValue(Row.GetCell(11)))
                         };
-
+                        
                         weatherConditionsList.Add(weatherConditionsFromFile);
                     }
 
@@ -98,9 +100,18 @@ namespace WeatherArchive.Services.FileConverter
 
         private T? GetValueOrNull<T>(string valueAsString) where T : struct
         {
-            if (string.IsNullOrEmpty(valueAsString))
+            if (string.IsNullOrEmpty(valueAsString)||string.Equals(valueAsString," "))
                 return null;
             return (T)Convert.ChangeType(valueAsString, typeof(T));
+        }
+
+        private string? CheckString(string str )
+        {
+            if (string.IsNullOrEmpty(str)|| string.Equals(str, " "))
+            {
+                return null;
+            }
+            else return str.Trim();
         }
 
 
