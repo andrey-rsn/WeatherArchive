@@ -123,27 +123,54 @@
     </table>
     @if (Model.PageViewModel.HasPreviousPage)
     {
-        <a asp-action="WeatherConditionsList"
+        <form asp-controller="Home" asp-action="WeatherConditionsList" method="get"> 
+
+        <input type="hidden" name="year" id="yearInput" >
+        <input type="hidden" name="month" id="monthInput" >
+        <input type="hidden" name="page" id="pageInput" value="@(Model.PageViewModel.PageNumber - 1)">
+        <div align="center" class="d-inline">
+            <input id="PreviousPage" type="submit" value="Назад"/>
+        </div>
+        
+        </form>
+        <!--<a asp-action="WeatherConditionsList"
            asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
            class="btn btn-outline-dark">
             <i class="glyphicon glyphicon-chevron-left"></i>
             Назад
-        </a>
+
+            <input type="hidden" name="year" id="yearInput" >
+            <input type="hidden" name="month" id="monthInput" >
+        </a>-->
     }
     @if (Model.PageViewModel.HasNextPage)
     {
+        <form asp-controller="Home" asp-action="WeatherConditionsList" method="get">
+        
+
+        <input type="hidden" name="year" id="yearInput" >
+        <input type="hidden" name="month" id="monthInput" >
+        <input type="hidden" name="page" id="pageInput" value="@(Model.PageViewModel.PageNumber + 1)">
+        <div align="center" class="d-inline">
+            <input id="NextPage" type="submit" value="Вперёд"/>
+        </div>
+        
+        </form>
+        <!--
         <a asp-action="WeatherConditionsList"
            asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
            class="btn btn-outline-dark">
             Вперед
             <i class="glyphicon glyphicon-chevron-right"></i>
-        </a>
+            <input type="hidden" name="year" id="yearInput" >
+            <input type="hidden" name="month" id="monthInput" >
+        </a>-->
     }
 
 }
 else
 {
-    <h1>Список пуст</h1>
+    <h1 align="center">Список пуст</h1>
 }
 
 
@@ -152,10 +179,20 @@ else
     <script>
      {
         window.onload=function(){
-                for (let year = (new Date()).getFullYear(); year >=1920 ; year--) {
+                for (let year = (new Date()).getFullYear(); year >=1990 ; year--) {
                   let options = document.createElement("OPTION");
                   document.getElementById("yearSelect").appendChild(options).innerHTML = year;
                 }
+                
+                const searchString = new URLSearchParams(window.location.search);
+
+                const year = searchString.get('year');
+                const month = searchString.get('month');
+
+                document.getElementById("yearSelect").value=year;
+                document.getElementById("monthSelect").value=month;
+                document.getElementById("yearInput").value=year;
+                document.getElementById("monthInput").value=month;
             }
     }
     </script>
@@ -163,10 +200,10 @@ else
     <script>
     {
         
-        const year = document.getElementById("yearSelect").value;
-        const month = document.getElementById("monthSelect").value;
-        document.getElementById("yearInput").value = year;
-        document.getElementById("monthInput").value = month;
+        //const year = document.getElementById("yearSelect").value;
+        //const month = document.getElementById("monthSelect").value;
+        ///document.getElementById("yearInput").value = year;
+        //document.getElementById("monthInput").value = month;
 
         const elementYear = document.querySelector('#yearSelect');
         const elementMonth = document.querySelector('#monthSelect');
