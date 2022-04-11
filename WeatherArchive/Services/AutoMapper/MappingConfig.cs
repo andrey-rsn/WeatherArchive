@@ -11,8 +11,6 @@ namespace WeatherArchive.Services.AutoMapper
             var mappingConfig = new MapperConfiguration(config =>
             {
                 config.CreateMap<WeatherConditions, WeatherConditionsDTO>().ReverseMap();
-                //config.CreateMap<IEnumerable<WeatherConditions>, IEnumerable<WeatherConditionsDTO>>().ReverseMap();
-
             });
             return mappingConfig;
         }

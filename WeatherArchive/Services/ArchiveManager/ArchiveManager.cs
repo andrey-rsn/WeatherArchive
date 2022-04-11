@@ -1,75 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 using WeatherArchive.Models;
 using WeatherArchive.Models.DTOs;
 using WeatherArchive.Repositories;
 using WeatherArchive.Services.FileConverter;
 
-namespace WeatherArchive.Controllers
+namespace WeatherArchive.Services.ArchiveManager
 {
-    
-    public class HomeController : Controller
+    public class ArchiveManager : IArchiveManager<WeatherConditionsListViewModel>
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IFileConverter<IEnumerable<WeatherConditionsDTO>> _fileConverter;
         private readonly IWebHostEnvironment _appEnvironment;
         private readonly IWeatherConditionsRepository _weatherConditionsRepository;
-
-        
-        public HomeController(ILogger<HomeController> logger, IFileConverter<IEnumerable<WeatherConditionsDTO>> fileConverter , IWeatherConditionsRepository weatherConditionsRepository , IWebHostEnvironment appEnvironment )
+        public ArchiveManager(IFileConverter<IEnumerable<WeatherConditionsDTO>> fileConverter, IWebHostEnvironment appEnvironment, IWeatherConditionsRepository weatherConditionsRepository)
         {
-            _logger = logger;
             _fileConverter = fileConverter;
-            _weatherConditionsRepository = weatherConditionsRepository;
             _appEnvironment = appEnvironment;
+            _weatherConditionsRepository = weatherConditionsRepository;
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> WeatherConditionsList(int Year=2010,int Month=1,int page=1,int pageSize=5)
+        public async Task<WeatherConditionsListViewModel> GetPageViewModel(int Year, int Month, int page, int pageSize)
         {
             var date = new DateTime(Year, Month, 01);
-            var weatherConditionsList= await _weatherConditionsRepository.GetWeatherConditionsByYearAndTime(date.Year, date.Month);
+            var weatherConditionsList = await _weatherConditionsRepository.GetWeatherConditionsByYearAndTime(date.Year, date.Month);
 
-            PageViewModel pageModel = new PageViewModel(weatherConditionsList.Count(),page,pageSize,Year,Month);
-            var weatherConditionsPaging = weatherConditionsList.Skip(pageSize*(page-1)).Take(pageSize);
+            PageViewModel pageModel = new PageViewModel(weatherConditionsList.Count(), page, pageSize, Year, Month);
+            var weatherConditionsPaging = weatherConditionsList.Skip(pageSize * (page - 1)).Take(pageSize);
             var ViewModel = new WeatherConditionsListViewModel()
             {
                 WeatherConditions = weatherConditionsPaging,
                 PageViewModel = pageModel
             };
 
-            return View(ViewModel);
+            return ViewModel;
         }
 
-        
-
-        [HttpGet]
-        public async Task<IActionResult> UploadArchive()
+        public async Task<string> UploadFiles(IFormFileCollection files)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadFiles(IFormFileCollection files)
-        {
-            StringBuilder ResultMessage=new StringBuilder("Result: ");
-            if(files.Count==0)
+            StringBuilder ResultMessage = new StringBuilder("Result: ");
+            if (files.Count == 0)
             {
                 ResultMessage.Append("There are no files uploaded");
+                return ResultMessage.ToString();
             }
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 try
                 {
                     string filePath = _appEnvironment.WebRootPath + "/Files/" + file.FileName;
-                    if(System.IO.File.Exists(filePath))
+                    if (System.IO.File.Exists(filePath))
                     {
                         System.IO.File.Delete(filePath);
                     }
@@ -96,20 +73,12 @@ namespace WeatherArchive.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ResultMessage.Append("\\r\\n" +"File: "+file.FileName + " -- "+ex.Message);
+                    ResultMessage.Append("\\r\\n" + "File: " + file.FileName + " -- " + ex.Message);
                 }
 
             }
-            
-            ViewBag.Message = ResultMessage.ToString();
-            return View(nameof(UploadArchive));
-        }
 
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return ResultMessage.ToString();
         }
     }
 }
