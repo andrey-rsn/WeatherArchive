@@ -3,16 +3,15 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<form asp-controller="Home" asp-action="WeatherConditionsList" method="get"> 
 
-<input type="hidden" name="year" id="yearInput" >
-<input type="hidden" name="month" id="monthInput" >
+<form asp-controller="Home" asp-action="WeatherConditionsList" method="get" align="left"> 
 
-<div align="center" class="d-inline">
-    <input id="Sort" type="submit" value="Отсортировать"/>
-</div>
+<input type="hidden" name="year" id="yearInput_main" >
+<input type="hidden" name="month" id="monthInput_main" >
+<input type="hidden" name="pageSize" id="pageSizeInput_main" >
 
-</form>
+
+
 
 <div align="center" class="d-inline">
     <label>Сортировка:</label>
@@ -40,9 +39,22 @@
         <option value=12>Декабрь</option>
     </select>
     </label>
+
+    <label>Кол-во элементов на странице <select id="pageSizeSelect">
+        
+        <option value=5>5</option>
+        <option value=10>10</option>
+        <option value=20>20</option>
+      
+    </select>
+    </label>
+
     </div>
 
-
+    <div align="center" class="d-inline" >
+    <input id="Sort" type="submit" value="Отсортировать"/>
+    </div>
+</form>
 
 
 @if(Model.WeatherConditions.Count()>0)
@@ -121,51 +133,36 @@
         }
         </tbody>
     </table>
+    <div align="center" class="d-inline" justify-content= "space-between">
     @if (Model.PageViewModel.HasPreviousPage)
     {
-        <form asp-controller="Home" asp-action="WeatherConditionsList" method="get"> 
 
-        <input type="hidden" name="year" id="yearInput" >
-        <input type="hidden" name="month" id="monthInput" >
-        <input type="hidden" name="page" id="pageInput" value="@(Model.PageViewModel.PageNumber - 1)">
-        <div align="center" class="d-inline">
-            <input id="PreviousPage" type="submit" value="Назад"/>
-        </div>
-        
-        </form>
-        <!--<a asp-action="WeatherConditionsList"
-           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+        <a asp-action="WeatherConditionsList"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)" asp-route-month=@Model.PageViewModel.Month asp-route-year=@Model.PageViewModel.Year asp-route-pageSize=@Model.PageViewModel.PageSize
            class="btn btn-outline-dark">
             <i class="glyphicon glyphicon-chevron-left"></i>
             Назад
 
             <input type="hidden" name="year" id="yearInput" >
             <input type="hidden" name="month" id="monthInput" >
-        </a>-->
+        </a>
     }
     @if (Model.PageViewModel.HasNextPage)
     {
-        <form asp-controller="Home" asp-action="WeatherConditionsList" method="get">
-        
 
-        <input type="hidden" name="year" id="yearInput" >
-        <input type="hidden" name="month" id="monthInput" >
-        <input type="hidden" name="page" id="pageInput" value="@(Model.PageViewModel.PageNumber + 1)">
-        <div align="center" class="d-inline">
-            <input id="NextPage" type="submit" value="Вперёд"/>
-        </div>
-        
-        </form>
-        <!--
         <a asp-action="WeatherConditionsList"
-           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
-           class="btn btn-outline-dark">
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)" asp-route-month=@Model.PageViewModel.Month asp-route-year=@Model.PageViewModel.Year asp-route-pageSize=@Model.PageViewModel.PageSize
+           class="btn btn-outline-dark ">
             Вперед
             <i class="glyphicon glyphicon-chevron-right"></i>
             <input type="hidden" name="year" id="yearInput" >
             <input type="hidden" name="month" id="monthInput" >
-        </a>-->
+        </a>
     }
+    <span align="right">
+    <p class="d-inline mr-2">Страница: @Model.PageViewModel.PageNumber из @Model.PageViewModel.TotalPages</p>
+    </span>
+    </div>
 
 }
 else
@@ -178,7 +175,8 @@ else
 {
     <script>
      {
-        window.onload=function(){
+         
+         document.addEventListener("DOMContentLoaded", function(){
                 for (let year = (new Date()).getFullYear(); year >=1990 ; year--) {
                   let options = document.createElement("OPTION");
                   document.getElementById("yearSelect").appendChild(options).innerHTML = year;
@@ -186,36 +184,71 @@ else
                 
                 const searchString = new URLSearchParams(window.location.search);
 
-                const year = searchString.get('year');
+                const yearValue = searchString.get('year');
                 const month = searchString.get('month');
+                const pageSize = searchString.get('pageSize');
 
-                document.getElementById("yearSelect").value=year;
-                document.getElementById("monthSelect").value=month;
-                document.getElementById("yearInput").value=year;
-                document.getElementById("monthInput").value=month;
-            }
+                if(yearValue.trim()==="")
+                {
+                   document.getElementById("yearSelect").value=2010;
+                   document.getElementById("yearInput_main").value = 2010;
+                }
+                else
+                {
+                    document.getElementById("yearSelect").value=yearValue;
+                    document.getElementById("yearInput_main").value = yearValue;
+                }
+                if(month.trim()==="")
+                {
+                    document.getElementById("monthSelect").value=5;
+                    document.getElementById("monthInput_main").value = 5;
+                }
+                else
+                {
+                    document.getElementById("monthSelect").value=month;
+                    document.getElementById("monthInput_main").value = month;
+                }
+                if(pageSize.trim()==="")
+                {
+                    document.getElementById("pageSizeSelect").value=10;
+                    document.getElementById("pageSizeInput_main").value = 10;
+                }
+                else
+                {
+                    document.getElementById("pageSizeSelect").value=pageSize;
+                    document.getElementById("pageSizeInput_main").value = pageSize;
+                }
+                
+                //document.getElementById("yearSelect").value=year;
+                //document.getElementById("monthSelect").value=month;
+                //document.getElementById("pageSizeSelect").value=pageSize;
+                //document.getElementById("yearInput_main").value = year;
+                //document.getElementById("monthInput_main").value = month;
+                //document.getElementById("pageSizeInput_main").value = pageSize;
+            });
     }
     </script>
 
     <script>
     {
         
-        //const year = document.getElementById("yearSelect").value;
-        //const month = document.getElementById("monthSelect").value;
-        ///document.getElementById("yearInput").value = year;
-        //document.getElementById("monthInput").value = month;
-
         const elementYear = document.querySelector('#yearSelect');
         const elementMonth = document.querySelector('#monthSelect');
+        const elementPageSize = document.querySelector('#pageSizeSelect');
 
         elementYear.addEventListener("change", function() {
           const element = document.querySelector('#yearSelect');
-          document.getElementById("yearInput").value = element.value;
+          document.getElementById("yearInput_main").value = element.value;
         });
 
         elementMonth.addEventListener("change", function() {
           const element = document.querySelector('#monthSelect');
-          document.getElementById("monthInput").value = element.value;
+          document.getElementById("monthInput_main").value = element.value;
+        });
+
+        elementPageSize.addEventListener("change", function() {
+          const element = document.querySelector('#pageSizeSelect');
+          document.getElementById("pageSizeInput_main").value = element.value;
         });
     }
     </script>
