@@ -1,17 +1,25 @@
 ﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using System.Globalization;
 using WeatherArchive.Models.DTOs;
 
 namespace WeatherArchive.Services.FileConverter
 {
+    /// <summary>
+    /// Excel file converter service 
+    /// </summary>
     public class ExcelFileConverter : IFileConverter<IEnumerable<WeatherConditionsDTO>>
     {
         public ExcelFileConverter()
         {
 
         }
+
+        /// <summary>
+        /// Method for converting file stream to WeatherConditionsDTO model
+        /// </summary>
+        /// <param name="inputFile"> Input file stream </param>
+        /// <returns> Collection of WeatherConditionsDTO models </returns>
         public IEnumerable<WeatherConditionsDTO> ConvertFile(FileStream inputFile)
         {
 
@@ -87,7 +95,7 @@ namespace WeatherArchive.Services.FileConverter
                 }
                 else
                 {
-                    throw new Exception();
+                    throw new Exception("There are no data in file");
                 }
 
                 

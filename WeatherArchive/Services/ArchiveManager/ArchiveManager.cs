@@ -6,6 +6,9 @@ using WeatherArchive.Services.FileConverter;
 
 namespace WeatherArchive.Services.ArchiveManager
 {
+    /// <summary>
+    /// Archive manager
+    /// </summary>
     public class ArchiveManager : IArchiveManager<WeatherConditionsListViewModel>
     {
         private readonly IFileConverter<IEnumerable<WeatherConditionsDTO>> _fileConverter;
@@ -17,6 +20,15 @@ namespace WeatherArchive.Services.ArchiveManager
             _appEnvironment = appEnvironment;
             _weatherConditionsRepository = weatherConditionsRepository;
         }
+
+        /// <summary>
+        /// Method for creating WeatherConditionsList page ViewModel
+        /// </summary>
+        /// <param name="Year"> Year </param>
+        /// /// <param name="Month"> Month </param>
+        /// /// <param name="page"> Page number </param>
+        /// /// <param name="pageSize"> Page size </param>
+        /// <returns> WeatherConditionsList page ViewModel </returns>
         public async Task<WeatherConditionsListViewModel> GetPageViewModel(int Year, int Month, int page, int pageSize)
         {
             var date = new DateTime(Year, Month, 01);
@@ -33,6 +45,14 @@ namespace WeatherArchive.Services.ArchiveManager
             return ViewModel;
         }
 
+        /// <summary>
+        /// Method for uploading and save in Db Weather conditions from files
+        /// </summary>
+        /// <param name="files"> Input files </param>
+        /// <returns> bool value </returns>
+        /// <exception cref="Exception">
+        /// Thrown when the error occurred.
+        /// </exception>
         public async Task<string> UploadFiles(IFormFileCollection files)
         {
             StringBuilder ResultMessage = new StringBuilder("Result: ");
@@ -43,9 +63,9 @@ namespace WeatherArchive.Services.ArchiveManager
             }
             foreach (var file in files)
             {
+                string filePath=_appEnvironment.WebRootPath + "/Files/" + file.FileName;;
                 try
                 {
-                    string filePath = _appEnvironment.WebRootPath + "/Files/" + file.FileName;
                     if (System.IO.File.Exists(filePath))
                     {
                         System.IO.File.Delete(filePath);
@@ -73,6 +93,7 @@ namespace WeatherArchive.Services.ArchiveManager
                 }
                 catch (Exception ex)
                 {
+                    System.IO.File.Delete(filePath);
                     ResultMessage.Append("\\r\\n" + "File: " + file.FileName + " -- " + ex.Message);
                 }
 
