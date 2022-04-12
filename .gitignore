@@ -352,11 +352,11 @@ MigrationBackup/
 **/.vs
 **/bin
 **/obj
-**/appsettings.json
+
 /.vs
 /bin
 /obj
-appsettings.json
+
 
 */**/.vs
 */**/bin/Debug
